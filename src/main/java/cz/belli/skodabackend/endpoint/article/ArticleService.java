@@ -1,5 +1,6 @@
 package cz.belli.skodabackend.endpoint.article;
 
+import cz.belli.skodabackend.endpoint.pushnotification.PushNotificationService;
 import cz.belli.skodabackend.endpoint.tag.TagEntity;
 import cz.belli.skodabackend.endpoint.tag.TagEntity_;
 import cz.belli.skodabackend.model.dto.ArticleDTO;
@@ -29,28 +30,33 @@ public class ArticleService {
     private final FileService fileService;
     private final TagRepository tagRepository;
     private final EntityManager entityManager;
+    private final SentryService sentryService;
+    private final PushNotificationService pushNotificationService;
 
-    public ArticleService(
-            ArticleContentRepository articleContentRepository,
-            FileService fileService,
-            TagRepository tagRepository,
-            EntityManager entityManager
-    ) {
+
+    public ArticleService(ArticleContentRepository articleContentRepository,
+                          FileService fileService,
+                          TagRepository tagRepository,
+                          EntityManager entityManager,
+                          SentryService sentryService,
+                          PushNotificationService pushNotificationService) {
         this.articleContentRepository = articleContentRepository;
         this.fileService = fileService;
         this.tagRepository = tagRepository;
         this.entityManager = entityManager;
+        this.sentryService = sentryService;
+        this.pushNotificationService = pushNotificationService;
     }
 
     /**
-     *  Get article detail by articleContentId.
+     * Get article detail by articleContentId.
      *
-     *  @param articleContentId Id of article content.
+     * @param articleContentId Id of article content.
      */
-    public ArticleDTO getArticleDetail(int articleContentId) {
+    protected ArticleDTO getArticleDetail(int articleContentId) {
         ArticleContentEntity articleContentEntity = this.articleContentRepository.getArticleDetailDto(articleContentId);
         if (articleContentEntity == null) {
-            SentryService.captureMessage("Article content (" + articleContentId + ") not found.");
+            this.sentryService.captureMessage("Article content (" + articleContentId + ") not found.");
             throw new ExtendedResponseStatusException(
                     HttpStatus.NOT_FOUND,
                     "Article content not found.",
@@ -66,7 +72,7 @@ public class ArticleService {
      * @param articleType   Type of article.
      * @param newArticleDto Article details.
      */
-    public void createArticle(ArticleTypeEnum articleType, ArticleRequestDTO newArticleDto) {
+    protected void createArticle(ArticleTypeEnum articleType, ArticleRequestDTO newArticleDto) {
         System.out.println("[STORYBOARD_ARTICLE_SERVICE] Article=" + newArticleDto.toString());
 
         // Title is mandatory, we will take from it what languages are in the request.
@@ -139,6 +145,11 @@ public class ArticleService {
 
         // Save article content.
         this.articleContentRepository.saveAll(articleContentEntities);
+
+        // Send push notification to topic for every language.
+        articleContentEntities.forEach(articleContentEntity -> {
+            this.pushNotificationService.sendPushNotificationToTopic(articleContentEntity, articleContentEntity.getLanguage());
+        });
     }
 
     /**
@@ -149,7 +160,7 @@ public class ArticleService {
      * @param updatedArticle   Updated article data.
      * @return Updated article as ArticleDto.
      */
-    public ArticleDTO updateArticle(int articleContentId, ArticleDTO updatedArticle) {
+    protected ArticleDTO updateArticle(int articleContentId, ArticleDTO updatedArticle) {
         ArticleContentEntity articleContentEntity = this.articleContentRepository.findById(articleContentId).orElse(null);
 
         if (articleContentEntity == null) {
@@ -235,10 +246,10 @@ public class ArticleService {
      * This API is used for updating article activity. Articles cannot be deleted, only deactivated.
      * Articles can be deactivated also via updateArticleById. But this API is for quick deactivation via administration.
      *
-     * @param articleContentId  Id of article to update.
-     * @param active            If true, article will be activated, if false, article will be deactivated.
+     * @param articleContentId Id of article to update.
+     * @param active           If true, article will be activated, if false, article will be deactivated.
      */
-    public void updateArticleActivity(int articleContentId, boolean active) {
+    protected void updateArticleActivity(int articleContentId, boolean active) {
         ArticleContentEntity articleContentEntity = this.articleContentRepository.findById(articleContentId).orElse(null);
 
         if (articleContentEntity == null) {
@@ -258,15 +269,15 @@ public class ArticleService {
      * Get articles by type and another filters.
      * Use CriteriaBuilder so we can add filters (conditions) dynamically.
      *
-     * @param articleType   Type of article.
-     * @param language      Language of article.
-     * @param page          Page number.
-     * @param count         Count of articles per page.
-     * @param active        If true, return only active articles.
-     * @param tagId         If not null, return only articles with this tag.
-     * @return              List of articles as list of ArticleDto.
+     * @param articleType Type of article.
+     * @param language    Language of article.
+     * @param page        Page number.
+     * @param count       Count of articles per page.
+     * @param active      If true, return only active articles.
+     * @param tagId       If not null, return only articles with this tag.
+     * @return List of articles as list of ArticleDto.
      */
-    public List<ArticleDTO> getArticlesByTypeAndFilter(
+    protected List<ArticleDTO> getArticlesByTypeAndFilter(
             ArticleTypeEnum articleType,
             LanguageEnum language,
             int page,

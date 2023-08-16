@@ -1,12 +1,15 @@
 package cz.belli.skodabackend.endpoint.pushnotification;
 
+import cz.belli.skodabackend.model.dto.PushTokenDTO;
 import cz.belli.skodabackend.model.enumeration.LanguageEnum;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -14,9 +17,11 @@ import java.util.Date;
  * Mobile application does not have user accounts, so sending push notifications to a specific user does not make sense.
  * It is only for purpose of sample application. We will send push notification (daily cookie :D) to a random device (token).
  */
-@Entity
 @Setter
 @Getter
+@DynamicInsert
+@Entity
+@Table(name = "push_token")
 public class PushTokenEntity {
 
     @Id
@@ -41,4 +46,14 @@ public class PushTokenEntity {
             name = "updated_at")
     private Date updatedAt;
 
+    public PushTokenEntity() {
+    }
+
+    public PushTokenEntity(PushTokenDTO tokenDTO) {
+        this.token = tokenDTO.getToken();
+        this.language = LanguageEnum.get(tokenDTO.getLanguage());
+        this.updatedAt = new Date();
+    }
 }
+
+

@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TagService {
@@ -17,7 +16,7 @@ public class TagService {
 
     private final TagRepository tagRepository;
 
-    public TagService(TagRepository tagRepository, EntityManager entityManager) {
+    protected TagService(TagRepository tagRepository, EntityManager entityManager) {
         this.tagRepository = tagRepository;
         this.entityManager = entityManager;
     }
@@ -29,11 +28,11 @@ public class TagService {
      * @return      Created tag.
      */
     @Transactional
-    public TagDTO createTag(TagDTO tag) {
+    protected TagDTO createTag(TagDTO tag) {
         TagEntityId tagEntityId = new TagEntityId(tag.getId(), LanguageEnum.get(tag.getLanguage()));
-        Optional<TagEntity> tagEntity = this.tagRepository.findById(tagEntityId);
+        TagEntity tagEntity = this.tagRepository.findById(tagEntityId).orElse(null);
 
-        if (tagEntity.isPresent()) {
+        if (tagEntity != null) {
             throw new ExtendedResponseStatusException(HttpStatus.CONFLICT, "Tag already exists.");
         }
 
@@ -56,7 +55,7 @@ public class TagService {
      *
      * @return      List of tags.
      */
-    public List<TagDTO> getAllTags(LanguageEnum language) {
+    protected List<TagDTO> getAllTags(LanguageEnum language) {
         List<TagEntity> tagEntities = this.tagRepository.findAllByLanguageOrderByOrderAsc(language);
         return TagDTO.createDtosFromEntities(tagEntities);
     }
@@ -67,23 +66,22 @@ public class TagService {
      * @param tag   New tag.
      * @return      Updated tag.
      */
-    public TagDTO updateTag(TagDTO tag) {
+    protected TagDTO updateTag(TagDTO tag) {
         TagEntityId tagEntityId = new TagEntityId(tag.getId(), LanguageEnum.get(tag.getLanguage()));
-        Optional<TagEntity> tagEntity = this.tagRepository.findById(tagEntityId);
+        TagEntity tagEntity = this.tagRepository.findById(tagEntityId).orElse(null);
 
-        if (tagEntity.isEmpty()) {
+        if (tagEntity == null) {
             throw new ExtendedResponseStatusException(HttpStatus.NOT_FOUND, "Tag not found.");
         }
 
-        TagEntity newTagEntity = tagEntity.get();
-        newTagEntity.setTitle(tag.getTitle());
+        tagEntity.setTitle(tag.getTitle());
         if (tag.getOrder() != null) {
-            newTagEntity.setOrder(tag.getOrder());
+            tagEntity.setOrder(tag.getOrder());
         }
 
-        this.tagRepository.save(newTagEntity);
+        this.tagRepository.save(tagEntity);
 
-        return new TagDTO(newTagEntity);
+        return new TagDTO(tagEntity);
     }
 
     /**
@@ -91,7 +89,7 @@ public class TagService {
      *
      * @param tag   Tag to delete.
      */
-    public void deleteTag(TagDTO tag) {
+    protected void deleteTag(TagDTO tag) {
         this.tagRepository.deleteById(tag.getId(), LanguageEnum.get(tag.getLanguage()));
     }
 }

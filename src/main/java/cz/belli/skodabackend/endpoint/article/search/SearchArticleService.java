@@ -30,7 +30,7 @@ public class SearchArticleService {
      * @param count     Number of articles per page.
      * @return          List of articles as list of ArticleDto.
      */
-    public List<ArticleDTO> searchArticle(ArticleTypeEnum articleType, String pattern, int page, int count, LanguageEnum language) {
+    protected List<ArticleDTO> searchArticle(ArticleTypeEnum articleType, String pattern, int page, int count, LanguageEnum language) {
         // Page is indexed from 0. But request is indexed from 1.
         Pageable pageable = PageRequest.of(page - 1, count, Sort.Direction.DESC, "dateOfPublication");
 
@@ -47,7 +47,7 @@ public class SearchArticleService {
      * @param language      Language of the article.
      * @return              List of articles as list of ArticleDto. Max 10 articles.
      */
-    public List<ArticleShortDTO> searchArticleAutocomplete(ArticleTypeEnum articleType, String pattern, LanguageEnum language) {
+    protected List<ArticleShortDTO> searchArticleAutocomplete(ArticleTypeEnum articleType, String pattern, LanguageEnum language) {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "dateOfPublication");
         return this.articleContentRepository.searchArticleAutocomplete(articleType, pattern, language, pageable);
     }
