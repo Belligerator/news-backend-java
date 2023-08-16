@@ -11,7 +11,7 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
-@DynamicInsert
+@DynamicInsert  // only non-null columns get referenced in the prepared sql statement
 @Table(name="article_content")
 public class ArticleContentEntity {
 

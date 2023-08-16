@@ -25,10 +25,10 @@ import java.util.Set;
 @Service
 public class ArticleService {
 
-    ArticleContentRepository articleContentRepository;
-    FileService fileService;
-    TagRepository tagRepository;
-    EntityManager entityManager;
+    private final ArticleContentRepository articleContentRepository;
+    private final FileService fileService;
+    private final TagRepository tagRepository;
+    private final EntityManager entityManager;
 
     public ArticleService(
             ArticleContentRepository articleContentRepository,
@@ -164,7 +164,8 @@ public class ArticleService {
         articleContentEntity.setTitle(updatedArticle.getTitle());
         articleContentEntity.setBody(updatedArticle.getBody());
         articleContentEntity.getArticle().setParent(updatedArticle.getParent());
-        articleContentEntity.getArticle().setActive(updatedArticle.getActive());
+        boolean active = updatedArticle.getActive() != null ? updatedArticle.getActive() : articleContentEntity.getArticle().getActive();
+        articleContentEntity.getArticle().setActive(active);
 
         // If date of publication is not set, set it to current date.
         if (updatedArticle.getDateOfPublication() != null) {

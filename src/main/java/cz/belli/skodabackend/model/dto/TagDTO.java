@@ -1,8 +1,14 @@
 package cz.belli.skodabackend.model.dto;
 
+import cz.belli.skodabackend.endpoint.article.ArticleContentEntity;
 import cz.belli.skodabackend.endpoint.tag.TagEntity;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -13,6 +19,7 @@ public class TagDTO {
      *
      * @example world for World news.
      */
+    @NotNull(message = "Id is required.")
     private String id;
 
     /**
@@ -20,6 +27,7 @@ public class TagDTO {
      *
      * @example en
      */
+    @NotNull(message = "Language is required.")
     private String language;
 
     /**
@@ -27,6 +35,7 @@ public class TagDTO {
      *
      * @example World
      */
+    @NotNull(message = "Title is required.")
     private String title;
 
     /**
@@ -44,4 +53,17 @@ public class TagDTO {
         this.order = tagEntity.getOrder();
     }
 
+    public static List<TagDTO> createDtosFromEntities(List<TagEntity> entities) {
+        if (entities == null) {
+            return new ArrayList<>();
+        }
+
+        return entities.stream()
+                .map(TagDTO::createDtoFromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public static TagDTO createDtoFromEntity(TagEntity entity) {
+        return new TagDTO(entity);
+    }
 }

@@ -17,4 +17,11 @@ public class TagEntityId implements Serializable {
     @Column()
     private LanguageEnum language;
 
+    public TagEntityId() {
+    }
+
+    public TagEntityId(String id, LanguageEnum language) {
+        this.id = id;
+        this.language = language;
+    }
 }

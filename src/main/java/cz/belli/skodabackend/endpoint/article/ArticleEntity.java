@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@DynamicInsert
+@DynamicInsert  // only non-null columns get referenced in the prepared sql statement
 @Table(name = "article")
 public class ArticleEntity {
 
