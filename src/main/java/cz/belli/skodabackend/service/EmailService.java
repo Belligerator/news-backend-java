@@ -60,7 +60,7 @@ public class EmailService {
             ctx.setVariable("dateOfPublication", new SimpleDateFormat("dd.MM.yyyy").format(articleContentEntity.getDateOfPublication()));
             ctx.setVariable("newsSmall", "newsSmall");
 
-            final String htmlContent = this.templateEngine.process("new-article.html", ctx);
+            final String htmlContent = this.templateEngine.process("new-article1.html", ctx);
             helper.setText(htmlContent, true);
 
             // Inline should be after setText.
@@ -70,7 +70,6 @@ public class EmailService {
             System.out.println("Email about new article " + articleContentEntity.getId() + " was sent.");
 
         } catch (MessagingException | IOException | TemplateInputException e) {
-            // todo logger
             SentryService.captureException(e);
         }
 
