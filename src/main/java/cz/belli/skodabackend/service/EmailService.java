@@ -59,6 +59,7 @@ public class EmailService {
             ctx.setVariable("title", articleContentEntity.getTitle());
             ctx.setVariable("body", articleContentEntity.getBody());
             if (articleContentEntity.getCoverImage() != null) {
+                // We want '/' in image url.
                 ctx.setVariable("coverImage", SERVER_URL + "/" + articleContentEntity.getCoverImage());
             }
             ctx.setVariable("dateOfPublication", new SimpleDateFormat("dd.MM.yyyy").format(articleContentEntity.getDateOfPublication()));
