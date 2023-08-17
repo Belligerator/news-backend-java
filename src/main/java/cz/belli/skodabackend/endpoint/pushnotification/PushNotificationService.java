@@ -10,6 +10,7 @@ import cz.belli.skodabackend.service.SentryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -20,14 +21,11 @@ public class PushNotificationService {
 
     private final FirebaseMessaging firebaseMessaging;
     private final PushNotificationRepository pushNotificationRepository;
-    private final SentryService sentryService;
 
     public PushNotificationService(FirebaseApp firebaseApp,
-                                   PushNotificationRepository pushNotificationRepository,
-                                   SentryService sentryService) {
+                                   PushNotificationRepository pushNotificationRepository) {
         this.firebaseMessaging = FirebaseMessaging.getInstance(firebaseApp);
         this.pushNotificationRepository = pushNotificationRepository;
-        this.sentryService = sentryService;
     }
 
     /**
@@ -36,6 +34,7 @@ public class PushNotificationService {
      * @param articleContentEntity Article content entity.
      * @param language             Language of the article. To what topic should we send the notification.
      */
+    @Async
     public void sendPushNotificationToTopic(ArticleContentEntity articleContentEntity, LanguageEnum language) {
         // Do not send whole body, because it could be too long.
         String body = articleContentEntity.getBody();
@@ -67,7 +66,7 @@ public class PushNotificationService {
             } catch (Exception e) {
                 // todo better error handling
                 System.err.println("Error sending message: " + e.getMessage());
-                this.sentryService.captureException(e);
+                SentryService.captureException(e);
             }
         }, Runnable::run);
     }
@@ -114,7 +113,7 @@ public class PushNotificationService {
                 } else {
                     // todo better error handling
                     System.out.println(e.getMessagingErrorCode());
-                    this.sentryService.captureException(e);
+                    SentryService.captureException(e);
                 }
             }
         }

@@ -10,6 +10,7 @@ import cz.belli.skodabackend.model.enumeration.ArticleTypeEnum;
 import cz.belli.skodabackend.model.enumeration.LanguageEnum;
 import cz.belli.skodabackend.model.exception.ExtendedResponseStatusException;
 import cz.belli.skodabackend.endpoint.tag.TagRepository;
+import cz.belli.skodabackend.service.EmailService;
 import cz.belli.skodabackend.service.FileService;
 import cz.belli.skodabackend.service.SentryService;
 import cz.belli.skodabackend.service.Utils;
@@ -30,8 +31,8 @@ public class ArticleService {
     private final FileService fileService;
     private final TagRepository tagRepository;
     private final EntityManager entityManager;
-    private final SentryService sentryService;
     private final PushNotificationService pushNotificationService;
+    private final EmailService emailService;
 
 
     public ArticleService(ArticleContentRepository articleContentRepository,
@@ -39,13 +40,14 @@ public class ArticleService {
                           TagRepository tagRepository,
                           EntityManager entityManager,
                           SentryService sentryService,
-                          PushNotificationService pushNotificationService) {
+                          PushNotificationService pushNotificationService,
+                          EmailService emailService) {
         this.articleContentRepository = articleContentRepository;
         this.fileService = fileService;
         this.tagRepository = tagRepository;
         this.entityManager = entityManager;
-        this.sentryService = sentryService;
         this.pushNotificationService = pushNotificationService;
+        this.emailService = emailService;
     }
 
     /**
@@ -56,7 +58,7 @@ public class ArticleService {
     protected ArticleDTO getArticleDetail(int articleContentId) {
         ArticleContentEntity articleContentEntity = this.articleContentRepository.getArticleDetailDto(articleContentId);
         if (articleContentEntity == null) {
-            this.sentryService.captureMessage("Article content (" + articleContentId + ") not found.");
+            SentryService.captureMessage("Article content (" + articleContentId + ") not found.");
             throw new ExtendedResponseStatusException(
                     HttpStatus.NOT_FOUND,
                     "Article content not found.",
@@ -150,6 +152,10 @@ public class ArticleService {
         articleContentEntities.forEach(articleContentEntity -> {
             this.pushNotificationService.sendPushNotificationToTopic(articleContentEntity, articleContentEntity.getLanguage());
         });
+
+        // Send email about new article.
+        // This feature is just for testing purposes, so pick first language.
+        this.emailService.sendNewArticleEmail(articleContentEntities.get(0));
     }
 
     /**

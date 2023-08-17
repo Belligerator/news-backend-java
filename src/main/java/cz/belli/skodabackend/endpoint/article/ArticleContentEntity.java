@@ -32,7 +32,7 @@ public class ArticleContentEntity {
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String body;
 
-    @Column()
+    @Column(name = "cover_image")
     private String coverImage;
 
     @Column(name = "date_of_publication", columnDefinition = "datetime NOT NULL", nullable = false)
