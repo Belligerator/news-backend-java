@@ -15,6 +15,8 @@ import cz.belli.skodabackend.service.FileService;
 import cz.belli.skodabackend.service.SentryService;
 import cz.belli.skodabackend.service.Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +43,6 @@ public class ArticleService {
                           FileService fileService,
                           TagRepository tagRepository,
                           EntityManager entityManager,
-                          SentryService sentryService,
                           PushNotificationService pushNotificationService,
                           EmailService emailService) {
         this.articleContentRepository = articleContentRepository;
@@ -57,7 +58,8 @@ public class ArticleService {
      *
      * @param articleContentId Id of article content.
      */
-    protected ArticleDTO getArticleDetail(int articleContentId) {
+    @Cacheable("articles")
+    public ArticleDTO getArticleDetail(int articleContentId) {
         ArticleContentEntity articleContentEntity = this.articleContentRepository.getArticleDetailDto(articleContentId);
         if (articleContentEntity == null) {
             SentryService.captureMessage("Article content (" + articleContentId + ") not found.");
@@ -76,7 +78,8 @@ public class ArticleService {
      * @param articleType   Type of article.
      * @param newArticleDto Article details.
      */
-    protected void createArticle(ArticleTypeEnum articleType, ArticleRequestDTO newArticleDto) {
+    @CacheEvict(value = "articles", allEntries = true)
+    public void createArticle(ArticleTypeEnum articleType, ArticleRequestDTO newArticleDto) {
         log.info("Creating Article=" + newArticleDto.getTitle());
 
         // Title is mandatory, we will take from it what languages are in the request.
@@ -167,7 +170,8 @@ public class ArticleService {
      * @param updatedArticle   Updated article data.
      * @return Updated article as ArticleDto.
      */
-    protected ArticleDTO updateArticle(int articleContentId, ArticleDTO updatedArticle) {
+    @CacheEvict(value = "articles", allEntries = true)
+    public ArticleDTO updateArticle(int articleContentId, ArticleDTO updatedArticle) {
         ArticleContentEntity articleContentEntity = this.articleContentRepository.findById(articleContentId).orElse(null);
 
         if (articleContentEntity == null) {
@@ -254,7 +258,8 @@ public class ArticleService {
      * @param articleContentId Id of article to update.
      * @param active           If true, article will be activated, if false, article will be deactivated.
      */
-    protected void updateArticleActivity(int articleContentId, boolean active) {
+    @CacheEvict(value = "articles", allEntries = true)
+    public void updateArticleActivity(int articleContentId, boolean active) {
         ArticleContentEntity articleContentEntity = this.articleContentRepository.findById(articleContentId).orElse(null);
 
         if (articleContentEntity == null) {
@@ -282,7 +287,8 @@ public class ArticleService {
      * @param tagId       If not null, return only articles with this tag.
      * @return List of articles as list of ArticleDto.
      */
-    protected List<ArticleDTO> getArticlesByTypeAndFilter(
+    @Cacheable("articles")
+    public List<ArticleDTO> getArticlesByTypeAndFilter(
             ArticleTypeEnum articleType,
             LanguageEnum language,
             int page,

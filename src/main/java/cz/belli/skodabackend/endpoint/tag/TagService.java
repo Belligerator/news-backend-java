@@ -3,6 +3,8 @@ package cz.belli.skodabackend.endpoint.tag;
 import cz.belli.skodabackend.model.dto.TagDTO;
 import cz.belli.skodabackend.model.enumeration.LanguageEnum;
 import cz.belli.skodabackend.model.exception.ExtendedResponseStatusException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,8 @@ public class TagService {
      * @return      Created tag.
      */
     @Transactional
-    protected TagDTO createTag(TagDTO tag) {
+    @CacheEvict(value = "tags", allEntries = true)
+    public TagDTO createTag(TagDTO tag) {
         TagEntityId tagEntityId = new TagEntityId(tag.getId(), LanguageEnum.get(tag.getLanguage()));
         TagEntity tagEntity = this.tagRepository.findById(tagEntityId).orElse(null);
 
@@ -55,7 +58,8 @@ public class TagService {
      *
      * @return      List of tags.
      */
-    protected List<TagDTO> getAllTags(LanguageEnum language) {
+    @Cacheable("tags")
+    public List<TagDTO> getAllTags(LanguageEnum language) {
         List<TagEntity> tagEntities = this.tagRepository.findAllByLanguageOrderByOrderAsc(language);
         return TagDTO.createDtosFromEntities(tagEntities);
     }
@@ -66,7 +70,8 @@ public class TagService {
      * @param tag   New tag.
      * @return      Updated tag.
      */
-    protected TagDTO updateTag(TagDTO tag) {
+    @CacheEvict(value = "tags", allEntries = true)
+    public TagDTO updateTag(TagDTO tag) {
         TagEntityId tagEntityId = new TagEntityId(tag.getId(), LanguageEnum.get(tag.getLanguage()));
         TagEntity tagEntity = this.tagRepository.findById(tagEntityId).orElse(null);
 
@@ -89,7 +94,8 @@ public class TagService {
      *
      * @param tag   Tag to delete.
      */
-    protected void deleteTag(TagDTO tag) {
+    @CacheEvict(value = "articles", allEntries = true)
+    public void deleteTag(TagDTO tag) {
         this.tagRepository.deleteById(tag.getId(), LanguageEnum.get(tag.getLanguage()));
     }
 }
