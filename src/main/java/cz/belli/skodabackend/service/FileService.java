@@ -1,6 +1,7 @@
 package cz.belli.skodabackend.service;
 
 import cz.belli.skodabackend.model.exception.ExtendedResponseStatusException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 import static cz.belli.skodabackend.Constants.INTERNAL_SERVER_ERROR_MESSAGE;
 
+@Slf4j
 @Service
 public class FileService {
 
@@ -65,11 +67,12 @@ public class FileService {
             return;
         }
 
-        System.out.println("Deleting file: " + fileName);
+        log.info("Deleting file: " + fileName);
         File file = new File(UPLOADS_FOLDER + '/' + fileName);
         if (file.exists()) {
             file.delete();
         }
+        log.info("File deleted: " + fileName);
     }
 
     /**

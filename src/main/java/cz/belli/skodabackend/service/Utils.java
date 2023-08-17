@@ -3,6 +3,7 @@ package cz.belli.skodabackend.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.belli.skodabackend.model.exception.ExtendedResponseStatusException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.UncategorizedDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import static cz.belli.skodabackend.Constants.INTERNAL_SERVER_ERROR_MESSAGE;
 
+@Slf4j
 public class Utils {
 
     /**
@@ -41,10 +43,8 @@ public class Utils {
                 D dto = dtoClass.getConstructor(entity.getClass()).newInstance(entity);
                 dtoList.add(dto);
             } catch (Exception e) {
-                // If there is an error, just skip the entity.
-                // todo better log, send to sentry
-                System.out.println("Error in convertEntitiesToDtos");
-                e.printStackTrace();
+                log.error("Error during converting entity to dto.", e);
+                SentryService.captureException(e);
             }
         }
         return dtoList;

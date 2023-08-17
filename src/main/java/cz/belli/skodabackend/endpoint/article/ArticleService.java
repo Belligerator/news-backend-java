@@ -14,6 +14,7 @@ import cz.belli.skodabackend.service.EmailService;
 import cz.belli.skodabackend.service.FileService;
 import cz.belli.skodabackend.service.SentryService;
 import cz.belli.skodabackend.service.Utils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class ArticleService {
 
@@ -75,7 +77,7 @@ public class ArticleService {
      * @param newArticleDto Article details.
      */
     protected void createArticle(ArticleTypeEnum articleType, ArticleRequestDTO newArticleDto) {
-        System.out.println("[STORYBOARD_ARTICLE_SERVICE] Article=" + newArticleDto.toString());
+        log.info("Creating Article=" + newArticleDto.getTitle());
 
         // Title is mandatory, we will take from it what languages are in the request.
         Set<String> languages = newArticleDto.getTitle().keySet();
@@ -93,9 +95,7 @@ public class ArticleService {
             Utils.stringToJsonObject(newArticleDto.getTags(), TagDTO.class)
                     .forEach(tagDto -> tagsIds.add(((TagDTO) tagDto).getId()));
         } catch (ExtendedResponseStatusException e) {
-            // todo log error
-            System.out.println("[STORYBOARD_ARTICLE_SERVICE] Cannot parse tags from request.");
-            e.printStackTrace();
+            log.error("Cannot parse tags from request: " + newArticleDto.getTags(), e);
 
             throw new ExtendedResponseStatusException(
                     HttpStatus.BAD_REQUEST,
@@ -147,6 +147,7 @@ public class ArticleService {
 
         // Save article content.
         this.articleContentRepository.saveAll(articleContentEntities);
+        log.info("Article saved: " + newArticleDto.getTitle());
 
         // Send push notification to topic for every language.
         articleContentEntities.forEach(articleContentEntity -> {
@@ -200,9 +201,7 @@ public class ArticleService {
                 Utils.stringToJsonObject(updatedArticle.getUpdatedTags(), TagDTO.class)
                         .forEach(tagDto -> tagsIds.add(((TagDTO) tagDto).getId()));
             } catch (ExtendedResponseStatusException e) {
-                // todo log error
-                System.out.println("[STORYBOARD_ARTICLE_SERVICE] Cannot parse tags from request.");
-                e.printStackTrace();
+                log.error("Cannot parse tags from request: " + updatedArticle.getUpdatedTags(), e);
 
                 throw new ExtendedResponseStatusException(
                         HttpStatus.BAD_REQUEST,

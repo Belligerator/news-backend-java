@@ -1,6 +1,7 @@
 package cz.belli.skodabackend.service;
 
 import cz.belli.skodabackend.endpoint.article.ArticleContentEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 
+@Slf4j
 @Service
 public class EmailService {
 
@@ -40,6 +42,8 @@ public class EmailService {
      */
     @Async
     public void sendNewArticleEmail(ArticleContentEntity articleContentEntity) {
+        log.info("Sending email about new article {}", articleContentEntity.getId());
+
         try {
             MimeMessage message = this.javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message,
@@ -60,16 +64,17 @@ public class EmailService {
             ctx.setVariable("dateOfPublication", new SimpleDateFormat("dd.MM.yyyy").format(articleContentEntity.getDateOfPublication()));
             ctx.setVariable("newsSmall", "newsSmall");
 
-            final String htmlContent = this.templateEngine.process("new-article1.html", ctx);
+            final String htmlContent = this.templateEngine.process("new-article.html", ctx);
             helper.setText(htmlContent, true);
 
             // Inline should be after setText.
             helper.addInline("newsSmall", new ClassPathResource("static" + File.separator + "best-news.png"));
 
             this.javaMailSender.send(message);
-            System.out.println("Email about new article " + articleContentEntity.getId() + " was sent.");
+            log.info("Email about new article {} was sent.", articleContentEntity.getId());
 
         } catch (MessagingException | IOException | TemplateInputException e) {
+            log.error("Error while sending email: " + articleContentEntity.getId(), e);
             SentryService.captureException(e);
         }
 

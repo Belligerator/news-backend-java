@@ -7,6 +7,7 @@ import cz.belli.skodabackend.endpoint.article.ArticleContentEntity;
 import cz.belli.skodabackend.model.dto.PushTokenDTO;
 import cz.belli.skodabackend.model.enumeration.LanguageEnum;
 import cz.belli.skodabackend.service.SentryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class PushNotificationService {
 
@@ -62,10 +64,10 @@ public class PushNotificationService {
         ApiFuture<String> response = firebaseMessaging.sendAsync(message);
         response.addListener(() -> {
             try {
-                System.out.println("[PUSH_NOTIFICATION_SERVICE] Push notification send: " + response.get());
+                String responseString = response.get();
+                log.info("[PUSH_NOTIFICATION_SERVICE] Push notification send: " + responseString);
             } catch (Exception e) {
-                // todo better error handling
-                System.err.println("Error sending message: " + e.getMessage());
+                log.error("Error sending topic push message.", e.getMessage());
                 SentryService.captureException(e);
             }
         }, Runnable::run);
@@ -105,14 +107,13 @@ public class PushNotificationService {
 
             try {
                 String response = this.firebaseMessaging.send(message);
-                System.out.println("[PUSH_NOTIFICATION_SERVICE] Push notification send cookie: " + response);
+                log.info("[PUSH_NOTIFICATION_SERVICE] Push notification send cookie: " + response);
             } catch (FirebaseMessagingException e) {
                 if (e.getMessagingErrorCode() == MessagingErrorCode.UNREGISTERED) {
                     // Token is no longer registered. Delete it from DB.
                     this.pushNotificationRepository.delete(pushTokenEntity);
                 } else {
-                    // todo better error handling
-                    System.out.println(e.getMessagingErrorCode());
+                    log.error("Error sending push message.", e);
                     SentryService.captureException(e);
                 }
             }

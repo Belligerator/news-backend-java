@@ -25,9 +25,9 @@ public class ErrorResponseDTO {
     @Override
     public String toString() {
         return "ErrorResponse{" +
-                "error='" + error + '\'' +
+                "statusCode=" + statusCode +
                 ", message='" + message + '\'' +
-                ", statusCode=" + statusCode +
+                ", error='" + error + '\'' +
                 '}';
     }
 }

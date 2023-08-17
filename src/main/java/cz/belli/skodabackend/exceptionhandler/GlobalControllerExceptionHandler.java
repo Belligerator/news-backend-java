@@ -3,6 +3,7 @@ package cz.belli.skodabackend.exceptionhandler;
 import cz.belli.skodabackend.model.dto.ErrorResponseDTO;
 import cz.belli.skodabackend.model.exception.ExtendedResponseStatusException;
 import cz.belli.skodabackend.model.exception.WrongEnumTypeException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
@@ -21,6 +22,7 @@ import java.util.Set;
 /**
  * This class handles exceptions thrown from controllers.
  */
+@Slf4j
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {
 
@@ -84,8 +86,7 @@ public class GlobalControllerExceptionHandler {
         errorResponse.setError(error);
         errorResponse.setStatusCode(status.value());
 
-        // todo print errorResponse to log
-        System.out.println(errorResponse.toString());
+        log.error(errorResponse.toString());
         return new ResponseEntity<>(errorResponse, status);
     }
 
