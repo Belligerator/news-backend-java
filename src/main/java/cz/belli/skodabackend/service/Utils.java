@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static cz.belli.skodabackend.Constants.INTERNAL_SERVER_ERROR_MESSAGE;
 
@@ -84,5 +85,24 @@ public class Utils {
 
             throw new ExtendedResponseStatusException(HttpStatus.BAD_REQUEST, error.toString());
         }
+    }
+
+    /**
+     * Generate random token.
+     *
+     * Source: <a href="https://www.baeldung.com/java-random-string">Baeldung</a>
+     * @param length    Length of the token.
+     * @return          Random token.
+     */
+    public static String generateRandomToken(int length) {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        Random random = new Random();
+
+        return random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(length)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 }

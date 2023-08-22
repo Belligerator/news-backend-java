@@ -1,8 +1,8 @@
 package cz.belli.skodabackend.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import cz.belli.skodabackend.endpoint.article.ArticleContentEntity;
-import cz.belli.skodabackend.endpoint.tag.TagEntity;
+import cz.belli.skodabackend.api.article.ArticleContentEntity;
+import cz.belli.skodabackend.api.tag.TagEntity;
 import cz.belli.skodabackend.service.Utils;
 
 import lombok.Getter;

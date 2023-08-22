@@ -18,4 +18,7 @@ public class Constants {
 
 
     public static final String INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error, contact the administrator.";
+
+    public static final int REFRESH_TOKEN_SIZE = 32;
+
 }

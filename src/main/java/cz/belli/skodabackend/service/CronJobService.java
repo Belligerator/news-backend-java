@@ -1,17 +1,15 @@
 package cz.belli.skodabackend.service;
 
-import cz.belli.skodabackend.endpoint.pushnotification.PushNotificationService;
+import cz.belli.skodabackend.api.pushnotification.PushNotificationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class CronJobService {
 
     private final PushNotificationService pushNotificationService;
-
-    public CronJobService(PushNotificationService pushNotificationService) {
-        this.pushNotificationService = pushNotificationService;
-    }
 
     /**
      * Cron job for sending free daily cookie via push notifications.

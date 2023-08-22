@@ -2,6 +2,7 @@ package cz.belli.skodabackend.exceptionhandler;
 
 import cz.belli.skodabackend.model.dto.ErrorResponseDTO;
 import cz.belli.skodabackend.model.exception.ExtendedResponseStatusException;
+import cz.belli.skodabackend.model.exception.UnauthorizedException;
 import cz.belli.skodabackend.model.exception.WrongEnumTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
@@ -9,6 +10,8 @@ import org.apache.tomcat.util.http.fileupload.impl.SizeException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -25,6 +28,11 @@ import java.util.Set;
 @Slf4j
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {
+
+    @ExceptionHandler({ AuthenticationException.class, UnauthorizedException.class, BadCredentialsException.class})
+    public ResponseEntity<ErrorResponseDTO> handleAuthenticationException(Exception ex) {
+        return createAndReturnErrorResponseDto(HttpStatus.UNAUTHORIZED, ex.getMessage(), ex.getMessage());
+    }
 
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<ErrorResponseDTO> handleConstraintViolationException(ConstraintViolationException ex) {

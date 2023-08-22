@@ -1,11 +1,8 @@
 package cz.belli.skodabackend.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
-import cz.belli.skodabackend.endpoint.pushnotification.PushTokenEntity;
+import cz.belli.skodabackend.api.pushnotification.PushTokenEntity;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.validation.constraints.NotNull;
 

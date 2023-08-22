@@ -1,6 +1,7 @@
 package cz.belli.skodabackend.service;
 
-import cz.belli.skodabackend.endpoint.article.ArticleContentEntity;
+import cz.belli.skodabackend.api.article.ArticleContentEntity;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class EmailService {
@@ -28,13 +30,6 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
-
-
-    public EmailService(JavaMailSender javaMailSender,
-                        TemplateEngine templateEngine) {
-        this.javaMailSender = javaMailSender;
-        this.templateEngine = templateEngine;
-    }
 
     /**
      * Send email about new article. It serves as a sample of sending email.

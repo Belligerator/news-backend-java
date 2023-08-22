@@ -1,7 +1,6 @@
 package cz.belli.skodabackend.model.dto;
 
-import cz.belli.skodabackend.endpoint.article.ArticleContentEntity;
-import cz.belli.skodabackend.endpoint.tag.TagEntity;
+import cz.belli.skodabackend.api.tag.TagEntity;
 import lombok.Getter;
 import lombok.Setter;
 
