@@ -20,9 +20,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/api/articles")
-public class ArticleController {
+public class ArticleContentController {
 
-    private final ArticleService articlesService;
+    private final ArticleContentService articlesService;
     private final FileService fileService;
 
     /**

@@ -20,7 +20,6 @@ import java.util.List;
 public class TagEntity {
 
     @Id
-    @Column()
     private String id;
 
     @Id

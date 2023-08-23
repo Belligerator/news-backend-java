@@ -49,9 +49,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             // If authorization header is present, we try to validate token.
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
-                    System.out.println("authorizationHeader: " + authorizationHeader);
                     String token = authorizationHeader.substring("Bearer ".length());
-                    Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET.getBytes());   // todo zmenit secret
+                    Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET.getBytes());
                     JWTVerifier verifier = JWT.require(algorithm).build();
                     DecodedJWT decodedJWT = verifier.verify(token);
                     String username = decodedJWT.getSubject();

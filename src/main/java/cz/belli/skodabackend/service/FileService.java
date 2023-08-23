@@ -48,8 +48,8 @@ public class FileService {
 
             return fileName;
         } catch (IOException e) {
-            // todo log error
-            e.printStackTrace();
+            log.error("Error while storing file: " + uploadedFile.getOriginalFilename(), e);
+            SentryService.captureException(e);
             throw new ExtendedResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     INTERNAL_SERVER_ERROR_MESSAGE,

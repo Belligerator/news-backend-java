@@ -22,7 +22,6 @@ public class ArticleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
     private Integer id;
 
     @Column(name = "article_type", nullable = false)

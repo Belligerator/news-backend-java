@@ -46,11 +46,11 @@ public class SecurityConfig {
                 .addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .requestMatchers((requestMatchers) ->
                         requestMatchers
-                                .antMatchers("/api/articles/**")
+                                .antMatchers("/api/auth/sign-out/**")
                 )
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
-                                .antMatchers("/api/articles/**").authenticated()
+                                .antMatchers("/api/auth/sign-out/**").authenticated()
                 )
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.authenticationEntryPoint(authEntryPoint)

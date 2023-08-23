@@ -14,6 +14,10 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String JWT_SECRET;
 
+    public static final int ACCESS_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000; // 60 minutes
+
+    public static final long REFRESH_TOKEN_EXPIRATION_TIME = 30L * 24 * 60 * 60 * 1000; // 30 days
+
     /**
      * Creates JWT token for given subject.
      * @param subject   User identifier.

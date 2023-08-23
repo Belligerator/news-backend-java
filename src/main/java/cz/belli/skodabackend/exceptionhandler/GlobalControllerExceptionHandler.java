@@ -18,8 +18,10 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -56,11 +58,13 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler({BindException.class})
     public ResponseEntity<ErrorResponseDTO> handleBindException(BindException ex) {
         BindingResult bindingResult = ex.getBindingResult();
-        StringBuilder error = new StringBuilder();
+        ArrayList<String> errors = new ArrayList<>();
 
         for (int i = 0; i < bindingResult.getErrorCount(); i++) {
-            error.append(bindingResult.getAllErrors().get(i).getDefaultMessage()).append(" ");
+            errors.add(bindingResult.getAllErrors().get(i).getDefaultMessage());
         }
+
+        String error = String.join(" ", errors);
 
         return createAndReturnErrorResponseDto(HttpStatus.BAD_REQUEST, error.toString(), error.toString());
     }

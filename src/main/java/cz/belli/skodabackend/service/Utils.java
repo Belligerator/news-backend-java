@@ -73,15 +73,18 @@ public class Utils {
 
     /**
      * Check if there are any errors in BindingResult and throw ExtendedResponseStatusException if there are.
+     *
      * @param bindingResult BindingResult to check.
      */
     public static void checkBindingResult(BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            StringBuilder error = new StringBuilder();
+            ArrayList<String> errors = new ArrayList<>();
 
-            for(int i = 0; i < bindingResult.getErrorCount(); i++) {
-                error.append(bindingResult.getAllErrors().get(i).getDefaultMessage()).append(" ");
+            for (int i = 0; i < bindingResult.getErrorCount(); i++) {
+                errors.add(bindingResult.getAllErrors().get(i).getDefaultMessage());
             }
+
+            String error = String.join(" ", errors);
 
             throw new ExtendedResponseStatusException(HttpStatus.BAD_REQUEST, error.toString());
         }

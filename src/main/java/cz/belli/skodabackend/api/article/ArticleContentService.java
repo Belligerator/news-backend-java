@@ -31,7 +31,7 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ArticleService {
+public class ArticleContentService {
 
     private final ArticleContentRepository articleContentRepository;
     private final FileService fileService;
@@ -274,7 +274,7 @@ public class ArticleService {
      * @param tagId       If not null, return only articles with this tag.
      * @return List of articles as list of ArticleDto.
      */
-//    @Cacheable("articles")
+    @Cacheable("articles")
     public List<ArticleDTO> getArticlesByTypeAndFilter(
             ArticleTypeEnum articleType,
             LanguageEnum language,

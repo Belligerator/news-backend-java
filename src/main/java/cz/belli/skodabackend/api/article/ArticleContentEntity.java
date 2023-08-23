@@ -1,5 +1,6 @@
 package cz.belli.skodabackend.api.article;
 
+import cz.belli.skodabackend.api.article.ArticleEntity;
 import cz.belli.skodabackend.model.enumeration.LanguageEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +18,6 @@ public class ArticleContentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
     private Integer id;
 
     @Column(name = "article_id", nullable = false, insertable = false, updatable = false)

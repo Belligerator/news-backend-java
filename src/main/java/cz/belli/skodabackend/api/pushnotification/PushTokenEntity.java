@@ -25,7 +25,6 @@ import java.util.Date;
 public class PushTokenEntity {
 
     @Id
-    @Column()
     private String token;
 
     @Column(nullable = false)
