@@ -7,14 +7,20 @@ import cz.belli.skodabackend.model.enumeration.LanguageEnum;
 import cz.belli.skodabackend.model.exception.ExtendedResponseStatusException;
 import cz.belli.skodabackend.service.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Validated
@@ -126,13 +132,23 @@ public class ArticleContentController {
     }
 
     /**
-     * API for exporting articles to excel file is not implemented yet.
-     *
-     * @throws ExtendedResponseStatusException 501 NOT_IMPLEMENTED - Not implemented yet.
+     * API for exporting articles to excel file.
+     * Now, it is exporting static file from resources.
+     * Exporting articles to excel is not implemented yet.
      */
     @GetMapping(path = "export")
-    public void exportToExcel() {
-        throw new ExtendedResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented yet.");
+    public ResponseEntity<Resource> exportToExcel() throws IOException {
+        ClassPathResource resource = new ClassPathResource("files" + File.separator + "articles_template.xlsx");
+
+        if (!resource.exists() || !resource.isReadable()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
 
     /**
