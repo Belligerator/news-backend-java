@@ -33,7 +33,7 @@ public class StaticController implements ErrorController {
     /**
      * Example of serving static file from disk.
      */
-    @GetMapping("public/readme")
+    @GetMapping("/api/public/readme")
     public ResponseEntity<Resource> getReadme() {
         ClassPathResource resource = new ClassPathResource("files" + File.separator + "README.md");
 
