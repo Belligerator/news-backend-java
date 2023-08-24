@@ -7,6 +7,7 @@ import cz.belli.skodabackend.model.enumeration.LanguageEnum;
 import cz.belli.skodabackend.model.exception.ExtendedResponseStatusException;
 import cz.belli.skodabackend.service.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -122,6 +123,16 @@ public class ArticleContentController {
     @GetMapping(path = "detail/{articleContentId}")
     public ArticleDTO getArticleDetail(@PathVariable(name = "articleContentId") int articleContentId) {
         return this.articlesService.getArticleDetail(articleContentId);
+    }
+
+    /**
+     * API for exporting articles to excel file is not implemented yet.
+     *
+     * @throws ExtendedResponseStatusException 501 NOT_IMPLEMENTED - Not implemented yet.
+     */
+    @GetMapping(path = "export")
+    public void exportToExcel() {
+        throw new ExtendedResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented yet.");
     }
 
     /**

@@ -7,18 +7,20 @@ import cz.belli.skodabackend.model.enumeration.ArticleTypeEnum;
 import cz.belli.skodabackend.model.enumeration.LanguageEnum;
 import cz.belli.skodabackend.api.article.ArticleContentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class SearchArticleService {
 
-    ArticleContentRepository articleContentRepository;
+    private final ArticleContentRepository articleContentRepository;
 
     /**
      * This method is used for searching articles by pattern in title or body.
@@ -28,6 +30,7 @@ public class SearchArticleService {
      * @param count     Number of articles per page.
      * @return          List of articles as list of ArticleDto.
      */
+    @Cacheable("search")
     protected List<ArticleDTO> searchArticle(ArticleTypeEnum articleType, String pattern, int page, int count, LanguageEnum language) {
         // Page is indexed from 0. But request is indexed from 1.
         Pageable pageable = PageRequest.of(page - 1, count, Sort.Direction.DESC, "dateOfPublication");
@@ -45,6 +48,7 @@ public class SearchArticleService {
      * @param language      Language of the article.
      * @return              List of articles as list of ArticleDto. Max 10 articles.
      */
+    @Cacheable("search")
     protected List<ArticleShortDTO> searchArticleAutocomplete(ArticleTypeEnum articleType, String pattern, LanguageEnum language) {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "dateOfPublication");
         return this.articleContentRepository.searchArticleAutocomplete(articleType, pattern, language, pageable);

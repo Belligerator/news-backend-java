@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "2ed66bae-7213-40a0-8bdc-ab2092e473ff",
-		"name": "News-node",
+		"name": "News",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -11,6 +11,9 @@
 				{
 					"name": "get all articles",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -21,7 +24,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/articles/news?tagId=world",
+							"raw": "{{host}}/api/articles/news",
 							"host": [
 								"{{host}}"
 							],
@@ -33,7 +36,7 @@
 							"query": [
 								{
 									"key": "count",
-									"value": "10",
+									"value": "1",
 									"disabled": true
 								},
 								{
@@ -43,7 +46,8 @@
 								},
 								{
 									"key": "tagId",
-									"value": "world"
+									"value": "sport",
+									"disabled": true
 								}
 							]
 						}
@@ -301,9 +305,6 @@
 				},
 				{
 					"name": "search article autocomplete",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [
@@ -314,17 +315,8 @@
 								"disabled": true
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"title\": {\r\n        \"cs\": \"Post titulek3\",\r\n        \"en\": \"Post title3\"\r\n    },\r\n    \"body\": {\r\n        \"cs\": \"Post telo\",\r\n        \"en\": \"Post body\"\r\n    },\r\n    \"tags\": [{\"id\": \"uk\"}, {\"id\": \"babis\"}]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{host}}/api/articles/search/autocomplete/news?pattern=kane",
+							"raw": "{{host}}/api/articles/search/autocomplete/news?pattern=tit",
 							"host": [
 								"{{host}}"
 							],
@@ -338,7 +330,7 @@
 							"query": [
 								{
 									"key": "pattern",
-									"value": "kane"
+									"value": "tit"
 								}
 							]
 						}
@@ -356,15 +348,6 @@
 										"disabled": true
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"title\": {\r\n        \"cs\": \"Post titulek3\",\r\n        \"en\": \"Post title3\"\r\n    },\r\n    \"body\": {\r\n        \"cs\": \"Post telo\",\r\n        \"en\": \"Post body\"\r\n    },\r\n    \"tags\": [{\"id\": \"uk\"}, {\"id\": \"babis\"}]\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
 									"raw": "{{host}}/api/articles/search/autocomplete/news?pattern=kane",
 									"host": [
@@ -565,7 +548,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/articles/search/news?pattern=kane",
+							"raw": "{{host}}/api/articles/search/news?pattern=tit&count=10&page=1",
 							"host": [
 								"{{host}}"
 							],
@@ -578,7 +561,15 @@
 							"query": [
 								{
 									"key": "pattern",
-									"value": "kane"
+									"value": "tit"
+								},
+								{
+									"key": "count",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "1"
 								}
 							]
 						}
@@ -606,7 +597,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{host}}/api/articles/search/news?pattern=kane",
+									"raw": "{{host}}/api/articles/search/news?pattern=kane&count=10&page=1",
 									"host": [
 										"{{host}}"
 									],
@@ -620,6 +611,14 @@
 										{
 											"key": "pattern",
 											"value": "kane"
+										},
+										{
+											"key": "count",
+											"value": "10"
+										},
+										{
+											"key": "page",
+											"value": "1"
 										}
 									]
 								}
@@ -1211,7 +1210,7 @@
 								}
 							]
 						},
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "x-language",
@@ -1236,7 +1235,7 @@
 						{
 							"name": "sign out user",
 							"originalRequest": {
-								"method": "POST",
+								"method": "GET",
 								"header": [
 									{
 										"key": "x-language",

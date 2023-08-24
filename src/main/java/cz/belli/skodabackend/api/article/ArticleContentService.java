@@ -65,7 +65,7 @@ public class ArticleContentService {
      * @param articleType   Type of article.
      * @param newArticleDto Article details.
      */
-    @CacheEvict(value = "articles", allEntries = true)
+    @CacheEvict(value = { "articles", "search" }, allEntries = true)
     public void createArticle(ArticleTypeEnum articleType, ArticleRequestDTO newArticleDto) {
         log.info("Creating Article=" + newArticleDto.getTitle());
 
@@ -157,7 +157,7 @@ public class ArticleContentService {
      * @param updatedArticle   Updated article data.
      * @return Updated article as ArticleDto.
      */
-    @CacheEvict(value = "articles", allEntries = true)
+    @CacheEvict(value = { "articles", "search" }, allEntries = true)
     public ArticleDTO updateArticle(int articleContentId, ArticleDTO updatedArticle) {
         ArticleContentEntity articleContentEntity = this.articleContentRepository.findById(articleContentId).orElse(null);
 
@@ -245,7 +245,7 @@ public class ArticleContentService {
      * @param articleContentId Id of article to update.
      * @param active           If true, article will be activated, if false, article will be deactivated.
      */
-    @CacheEvict(value = "articles", allEntries = true)
+    @CacheEvict(value = { "articles", "search" }, allEntries = true)
     public void updateArticleActivity(int articleContentId, boolean active) {
         ArticleContentEntity articleContentEntity = this.articleContentRepository.findById(articleContentId).orElse(null);
 
