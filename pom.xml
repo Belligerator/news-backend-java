@@ -10,8 +10,8 @@
     </parent>
     <groupId>cz.belli</groupId>
     <artifactId>skoda-backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>skoda-backend</name>
+    <version>0.1.0</version>
+    <name>skoda-backend-java</name>
     <description>Backend for skoda media room in Java.</description>
     <properties>
         <java.version>11</java.version>

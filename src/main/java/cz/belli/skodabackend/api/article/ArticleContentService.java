@@ -307,7 +307,8 @@ public class ArticleContentService {
             wherePredicates.add(cb.equal(article.get(ArticleEntity_.ACTIVE), true));
         }
 
-        if (tagId != null) {
+        // If tag is present, search by tag and tag language.
+        if (tagId != null && !tagId.isEmpty()) {
             wherePredicates.add(cb.equal(tags.get(TagEntity_.LANGUAGE), language));
             wherePredicates.add(cb.equal(tags.get(TagEntity_.ID), tagId));
         }
