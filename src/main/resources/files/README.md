@@ -12,6 +12,7 @@ This project is made as a sample project and implements some of the common featu
 - Authentication and Authorization (JWT, basic auth, username/password login)
 - Firebase Cloud Messaging (FCM) push notifications (via firebase-admin)
 - Sending emails
+- Exporting data to Excel file
 - File uploads and downloads
 - Dockerization
 - Cron jobs
@@ -22,7 +23,7 @@ This project is made as a sample project and implements some of the common featu
 
 ## Demo
 
-A demo of the backend can be found at https://news.java.belligerator.cz/api/. The demo is running on a Docker container.
+A demo of the backend can be found at https://news-java.belligerator.cz/api/. The demo is running on a Docker container.
 
 For that purpose I have created a docker image for the backend. The image can be found at https://hub.docker.com/r/belligerator/news-backend-java. The image is built using the Dockerfile in the root directory of this repository.
 
@@ -44,7 +45,7 @@ For running the backend locally, you will need the following:
 
 ### Installation
 
-1. Clone the repo
+1. Clone the repo [news-backend-java](https://github.com/Belligerator/news-backend-java)
    ```sh
    git clone git@github.com:Belligerator/news-backend-java.git
     ```
@@ -78,3 +79,7 @@ For running the backend locally, you will need the following:
 
 
 6. In the root directory, there is a `news.postman_collection.json` file that contains a Postman collection with sample requests. You can import it into Postman and use it to test the endpoints.
+
+## Documentation
+
+Documentation for the endpoints can be found at https://news.belligerator.cz/api/swagger.

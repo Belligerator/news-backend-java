@@ -12,6 +12,7 @@ This project is made as a sample project and implements some of the common featu
 - Authentication and Authorization (JWT, basic auth, username/password login)
 - Firebase Cloud Messaging (FCM) push notifications (via firebase-admin)
 - Sending emails
+- Exporting data to Excel file
 - File uploads and downloads
 - Dockerization
 - Cron jobs

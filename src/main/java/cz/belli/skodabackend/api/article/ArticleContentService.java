@@ -10,10 +10,7 @@ import cz.belli.skodabackend.model.enumeration.ArticleTypeEnum;
 import cz.belli.skodabackend.model.enumeration.LanguageEnum;
 import cz.belli.skodabackend.model.exception.ExtendedResponseStatusException;
 import cz.belli.skodabackend.api.tag.TagRepository;
-import cz.belli.skodabackend.service.EmailService;
-import cz.belli.skodabackend.service.FileService;
-import cz.belli.skodabackend.service.SentryService;
-import cz.belli.skodabackend.service.Utils;
+import cz.belli.skodabackend.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -23,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -300,8 +294,13 @@ public class ArticleContentService {
         List<Predicate> wherePredicates = new ArrayList<>();
 
         // Add conditions to wherePredicates.
-        wherePredicates.add(cb.equal(content.get(ArticleContentEntity_.LANGUAGE), language));
-        wherePredicates.add(cb.equal(article.get(ArticleEntity_.ARTICLE_TYPE), articleType));
+        if (language != null) {
+            wherePredicates.add(cb.equal(content.get(ArticleContentEntity_.LANGUAGE), language));
+        }
+
+        if (articleType != null) {
+            wherePredicates.add(cb.equal(article.get(ArticleEntity_.ARTICLE_TYPE), articleType));
+        }
 
         if (active) {
             wherePredicates.add(cb.equal(article.get(ArticleEntity_.ACTIVE), true));
@@ -328,4 +327,15 @@ public class ArticleContentService {
         return ArticleDTO.createDtosFromEntities(articleContentEntities);
     }
 
+    /**
+     * Export articles to excel file.
+     * @return  Excel file as byte array.
+     */
+    public byte[] exportToExcel() {
+        List<ArticleDTO> articles = this.getArticlesByTypeAndFilter(null, null, 1, 99999, false, null);
+
+        // Sort articles by articleContentId.
+        articles.sort(Comparator.comparingInt(ArticleDTO::getArticleContentId));
+        return ExcelService.createExcel(articles);
+    }
 }

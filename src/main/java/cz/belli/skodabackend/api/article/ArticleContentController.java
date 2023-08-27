@@ -21,6 +21,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Validated
@@ -133,22 +135,16 @@ public class ArticleContentController {
 
     /**
      * API for exporting articles to excel file.
-     * Now, it is exporting static file from resources.
-     * Exporting articles to excel is not implemented yet.
      */
     @GetMapping(path = "export")
-    public ResponseEntity<Resource> exportToExcel() throws IOException {
-        ClassPathResource resource = new ClassPathResource("files" + File.separator + "articles_template.xlsx");
-
-        if (!resource.exists() || !resource.isReadable()) {
-            return ResponseEntity.notFound().build();
-        }
-
+    public ResponseEntity<byte[]> exportToExcel() {
+        byte[] excelBytes = this.articlesService.exportToExcel();
+        String filename = new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "_articles.xlsx";
         return ResponseEntity.ok()
-                .contentLength(resource.contentLength())
-                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
+                .contentLength(excelBytes.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .body(excelBytes);
     }
 
     /**
