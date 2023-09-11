@@ -23,9 +23,7 @@ This project is made as a sample project and implements some of the common featu
 
 ## Demo
 
-A demo of the backend can be found at https://news-java.belligerator.cz/api/. The demo is running on a Docker container.
-
-For that purpose I have created a docker image for the backend. The image can be found at https://hub.docker.com/r/belligerator/news-backend-java. The image is built using the Dockerfile in the root directory of this repository.
+Demo can be run on a Docker container. For that purpose I have created a docker image for the backend. The image can be found at https://hub.docker.com/r/belligerator/news-backend-java. The image is built using the Dockerfile in the root directory of this repository.
 
 On the server, there is docker-compose file that is used to run the backend and MySQL database. The file can be found at https://github.com/Belligerator/news-docker.
 
